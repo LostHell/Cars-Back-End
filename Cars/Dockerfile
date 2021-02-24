@@ -10,17 +10,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["Test-api-ns/Test-api-ns.csproj", "Test-api-ns/"]
-RUN dotnet restore "Test-api-ns/Test-api-ns.csproj"
+COPY ["Cars/Cars.csproj", "Cars/"]
+RUN dotnet restore "Cars/Cars.csproj"
 COPY . .
-WORKDIR "/src/Test-api-ns"
-RUN dotnet build "Test-api-ns.csproj" -c Release -o /app/build
+WORKDIR "/src/Cars"
+RUN dotnet build "Cars.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Test-api-ns.csproj" -c Release -o /app/publish
+RUN dotnet publish "Cars.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 # ENTRYPOINT ["dotnet", "Test-api-ns.dll"]
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet Test-api-ns.dll
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet Cars.dll
